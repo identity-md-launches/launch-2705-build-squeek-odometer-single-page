@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<rect width="1200" height="630" fill="#141412"/>
+<path d="M64 136h1072M64 510h1072" stroke="#30302a"/>
+<rect x="64" y="64" width="40" height="40" fill="#fa9851"/><g stroke="#141412" stroke-width="2" fill="none"><circle cx="84" cy="82" r="12"/><path d="M84 70v24m-12-12h24m-20 20h16m-8-8v8"/></g>
+<text x="122" y="94" font-family="Arial,sans-serif" font-size="28" fill="#f2f0e7">Squeek Odometer</text>
+<circle cx="817" cy="317" r="138" fill="#1b1b18" stroke="#65655b" stroke-width="3"/>
+<circle cx="817" cy="317" r="150" fill="none" stroke="#30302a" stroke-width="5" stroke-dasharray="2 10"/>
+<g stroke="#30302a" stroke-width="2"><path d="M817 179v276M679 317h276M719 219l196 196M719 415l196-196M748 197l138 240M697 248l240 138M697 386l240-138M748 437l138-240"/></g>
+<circle cx="817" cy="317" r="138" fill="none" stroke="#fa9851" stroke-width="4" stroke-dasharray="35 181.75"/>
+<circle cx="817" cy="317" r="12" fill="#1b1b18" stroke="#fa9851" stroke-width="3"/>
+<path d="M817 455v28m-55 1h110" fill="none" stroke="#65655b" stroke-width="3"/>
+<ellipse cx="806" cy="418" rx="50" ry="27" fill="#c88b51"/><ellipse cx="792" cy="419" rx="24" ry="26" fill="#e8caa1"/><circle cx="846" cy="407" r="23" fill="#c88b51"/><circle cx="842" cy="384" r="10" fill="#c88b51"/><circle cx="842" cy="384" r="5" fill="#9e5d38"/><circle cx="855" cy="403" r="3" fill="#141412"/><path d="m868 411 5 2-5 3" fill="#141412"/>
+<text x="64" y="258" font-family="Arial,sans-serif" font-size="56" font-weight="600" fill="#f2f0e7">Little paws,</text>
+<text x="64" y="329" font-family="Arial,sans-serif" font-size="56" font-weight="600" fill="#fa9851">live miles.</text>
+<text x="64" y="394" font-family="Arial,sans-serif" font-size="23" fill="#aaa99d">Your front-row seat to Squeektoshi’s wheel.</text>
+<text x="64" y="562" font-family="Arial,sans-serif" font-size="20" fill="#aaa99d">Live distance · Nightly guesses · Stream overlays</text>
+<text x="930" y="562" font-family="Arial,sans-serif" font-size="18" fill="#aaa99d">Sepolia testnet</text>
+</svg>

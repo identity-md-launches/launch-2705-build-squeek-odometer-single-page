@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141412" />
+    <title>Squeek Odometer — Little paws, live miles</title>
+    <meta
+      name="description"
+      content="Follow Squeektoshi’s wheel in real time. Track tonight’s distance, make a guess, and check in on Squeekchain’s Sepolia testnet."
+    />
+    <meta
+      property="og:title"
+      content="Squeek Odometer — Little paws, live miles"
+    />
+    <meta
+      property="og:description"
+      content="One hamster. Every little kilometre. A live wheel companion for Squeekchain."
+    />
+    <meta property="og:image" content="./og.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link
+      rel="preload"
+      href="./fonts/dm-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./src/style.css" />
+    <script>
+      if (new URLSearchParams(location.search).get("overlay") === "1") {
+        document.documentElement.classList.add("overlay-mode");
+        document.documentElement.dataset.theme =
+          new URLSearchParams(location.search).get("theme") === "light"
+            ? "light"
+            : "dark";
+        document.documentElement.dataset.size =
+          new URLSearchParams(location.search).get("size") === "large"
+            ? "large"
+            : "small";
+      }
+    </script>
+  </head>
+  <body>
+    <div id="dashboard">
+      <a class="skip-link" href="#live">Skip to live odometer</a>
+      <header class="site-header wrap">
+        <a class="brand" href="./" aria-label="Squeek Odometer home">
+          <img src="./favicon.svg" width="36" height="36" alt="" />
+          <span>Squeek <span class="muted">Odometer</span></span>
+        </a>
+        <div class="header-actions">
+          <span class="network-label"
+            ><span class="square-dot"></span> Sepolia testnet</span
+          >
+          <button class="button primary" id="connect-wallet" type="button">
+            <span class="wallet-icon" aria-hidden="true"></span
+            ><span id="connect-label">Connect wallet</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="wrap">
+        <div class="page-top">
+          <div>
+            <h1>Little paws, live miles.</h1>
+            <p class="muted">Your front-row seat to Squeektoshi’s wheel.</p>
+          </div>
+          <a
+            class="button subtle stream-link"
+            href="https://x.com/squeekchain"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><span class="play-icon" aria-hidden="true">▷</span> Watch the
+            livestream <span aria-hidden="true">↗</span></a
+          >
+        </div>
+
+        <section
+          class="live-panel"
+          id="live"
+          aria-label="Live wheel and odometer"
+          tabindex="-1"
+        >
+          <div class="panel-top">
+            <p class="status-line">
+              <span class="status-dot" id="status-dot" aria-hidden="true"></span
+              ><span id="wheel-status" role="status"
+                >CONNECTING TO THE WHEEL</span
+              >
+            </p>
+            <span id="night-date" class="muted mono">Tonight</span>
+          </div>
+          <div class="live-grid">
+            <div class="wheel-scene">
+              <div id="wheel-art" class="wheel-art" aria-hidden="true"></div>
+              <div class="wheel-caption">
+                <span class="small-mark" aria-hidden="true">+</span
+                ><span>One very small proof of work.</span
+                ><button
+                  type="button"
+                  id="motion-toggle"
+                  class="icon-button"
+                  aria-label="Pause wheel animation"
+                  title="Pause wheel animation"
+                >
+                  Ⅱ
+                </button>
+              </div>
+            </div>
+            <div class="live-readings">
+              <div class="distance-label">
+                <h2>Tonight’s distance</h2>
+                <span class="muted">km</span>
+              </div>
+              <div
+                id="odometer"
+                class="odometer mono"
+                role="img"
+                aria-label="Tonight’s distance loading"
+              >
+                <span class="odometer-placeholder">––.–––</span>
+              </div>
+              <div class="live-caption">
+                <span class="status-tick" aria-hidden="true">↳</span
+                ><span id="distance-caption"
+                  >Every little kilometre counts.</span
+                >
+              </div>
+              <dl class="pace-grid">
+                <div>
+                  <dt>Current speed</dt>
+                  <dd>
+                    <span id="speed" class="mono">—</span
+                    ><span class="unit">km/h</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Wheel pace</dt>
+                  <dd>
+                    <span id="rpm" class="mono">—</span
+                    ><span class="unit">RPM</span>
+                  </dd>
+                </div>
+              </dl>
+              <div class="data-health">
+                <span id="last-updated">Waiting for live data…</span
+                ><button id="refresh" class="text-button" type="button">
+                  Refresh <span aria-hidden="true">↻</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="live-bottom">
+            <span class="muted">Live measurements, settled on Sepolia.</span
+            ><button id="copy-overlay-top" class="text-button" type="button">
+              Copy OBS overlay link <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="chain-strip" aria-label="Squeekchain progress">
+          <div class="chain-block">
+            <h2>Squeekchain block</h2>
+            <div class="label-row">
+              <div class="block-number mono" id="block-height">—</div>
+              <span id="block-progress-label" class="mono muted">—</span>
+            </div>
+            <progress
+              id="block-progress"
+              max="1000000000"
+              value="0"
+              aria-label="Progress to the next Squeekchain block"
+            ></progress>
+          </div>
+          <div class="minted-block">
+            <h2>SQK minted so far</h2>
+            <p>
+              <span id="minted" class="mono metric">—</span>
+              <span class="muted">SQK</span>
+            </p>
+            <span class="caption muted"
+              >Testnet tokens, powered by tiny paws.</span
+            ><span id="economy-health" class="feed-health"></span>
+          </div>
+          <div class="work-block">
+            <h2>The last 24 hours</h2>
+            <dl class="settlement-metrics">
+              <div>
+                <dt>Settlements</dt>
+                <dd id="settlement-count" class="mono">—</dd>
+              </div>
+              <div>
+                <dt>Blocks built</dt>
+                <dd id="completed-blocks" class="mono">—</dd>
+              </div>
+              <div>
+                <dt>Work added</dt>
+                <dd id="work-added" class="mono">—</dd>
+              </div>
+            </dl>
+            <span id="settlements-health" class="feed-health"></span>
+          </div>
+        </section>
+
+        <section
+          class="conversions-section"
+          aria-labelledby="conversions-title"
+        >
+          <div class="section-heading">
+            <div>
+              <h2 id="conversions-title">Put those paws in perspective</h2>
+              <p class="muted">A little distance goes a long way.</p>
+            </div>
+            <div class="segmented" aria-label="Distance period">
+              <button type="button" id="period-tonight" aria-pressed="true">
+                Tonight</button
+              ><button type="button" id="period-all" aria-pressed="false">
+                All time
+              </button>
+            </div>
+          </div>
+          <div class="conversion-grid">
+            <div class="conversion">
+              <span class="conversion-icon" aria-hidden="true"
+                ><svg viewBox="0 0 32 32">
+                  <path d="M8 28V5h17l-3 5 3 5H8M5 28h7" />
+                  <path d="M12 5v10m5-10v10m5-10v10M8 10h16" /></svg
+              ></span>
+              <div>
+                <p>
+                  <span id="marathon" class="mono conversion-value">—</span
+                  ><span class="muted">%</span>
+                </p>
+                <h3>of a marathon</h3>
+                <span class="caption muted">42.195 km to the finish</span>
+              </div>
+            </div>
+            <div class="conversion">
+              <span class="conversion-icon" aria-hidden="true"
+                ><svg viewBox="0 0 32 32">
+                  <rect x="3" y="8" width="26" height="16" rx="8" />
+                  <rect x="7" y="12" width="18" height="8" rx="4" />
+                  <path d="M16 8v8" /></svg
+              ></span>
+              <div>
+                <p>
+                  <span id="track" class="mono conversion-value">—</span
+                  ><span class="muted">laps</span>
+                </p>
+                <h3>of a running track</h3>
+                <span class="caption muted">400 m around</span>
+              </div>
+            </div>
+            <div class="conversion">
+              <span class="conversion-icon" aria-hidden="true"
+                ><svg viewBox="0 0 32 32">
+                  <path d="M3 6h26v20H3zM16 6v20M3 12h5v8H3m26-8h-5v8h5" />
+                  <circle cx="16" cy="16" r="4" /></svg
+              ></span>
+              <div>
+                <p>
+                  <span id="pitch" class="mono conversion-value">—</span
+                  ><span class="muted">times</span>
+                </p>
+                <h3>around a football pitch</h3>
+                <span class="caption muted">346 m perimeter · 105 × 68 m</span>
+              </div>
+            </div>
+          </div>
+          <p id="conversion-source" class="caption muted">
+            Based on tonight’s measured distance.
+          </p>
+        </section>
+
+        <section
+          class="history-section"
+          id="nightly-log"
+          aria-labelledby="history-title"
+        >
+          <div class="section-heading">
+            <div>
+              <h2 id="history-title">The nightly log</h2>
+              <p class="muted">Measured distance for the last 30 nights.</p>
+            </div>
+            <span id="record-summary" class="record-summary"
+              ><span aria-hidden="true">⚑</span> Waiting for the record
+              night</span
+            >
+          </div>
+          <div class="chart-topline">
+            <span class="caption muted">Distance · km</span
+            ><span id="chart-range" class="caption mono muted"
+              >Last 30 nights</span
+            >
+          </div>
+          <div
+            id="night-chart"
+            class="night-chart"
+            role="group"
+            aria-label="Nightly distance chart"
+          >
+            <p class="muted chart-loading">Loading the nightly log…</p>
+          </div>
+          <div class="chart-axis">
+            <span id="chart-start">—</span><span id="chart-middle">—</span
+            ><span id="chart-end">—</span>
+          </div>
+          <div class="chart-footer">
+            <span class="caption muted" id="chart-coverage"
+              >Missing nights are marked, never counted as zero.</span
+            ><button
+              type="button"
+              class="text-button"
+              id="show-night-data"
+              aria-expanded="false"
+              aria-controls="night-data"
+            >
+              View night data <span aria-hidden="true">↓</span>
+            </button>
+          </div>
+          <div id="night-data" hidden class="table-scroll">
+            <table>
+              <caption class="sr-only">
+                Distance by night, using the API’s night dates
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Night</th>
+                  <th scope="col">Distance</th>
+                  <th scope="col">Coverage</th>
+                </tr>
+              </thead>
+              <tbody id="night-data-rows"></tbody>
+            </table>
+          </div>
+          <span id="stats-health" class="feed-health"></span>
+        </section>
+
+        <div class="tools-grid">
+          <section
+            class="tool-section checkin-section"
+            id="check-in"
+            aria-labelledby="checkin-title"
+          >
+            <div class="section-title">
+              <h2 id="checkin-title">Leave a little proof you were here.</h2>
+              <span class="tag">Sepolia only</span>
+            </div>
+            <p class="muted">A tiny check-in for a tiny athlete.</p>
+            <p class="transaction-note" id="transaction-note">
+              This approves 0 SQK to yourself on Sepolia testnet. It moves no
+              funds.
+            </p>
+            <button id="checkin" class="button outline" type="button" disabled>
+              Squeek check-in <span aria-hidden="true">↗</span>
+            </button>
+            <p id="checkin-hint" class="caption muted">
+              Connect your wallet above to check in. Sepolia ETH is needed for
+              gas.
+            </p>
+            <p id="transaction-status" class="feedback" role="status"></p>
+            <a
+              id="transaction-link"
+              class="transaction-link mono"
+              hidden
+              target="_blank"
+              rel="noopener noreferrer"
+            ></a>
+            <details class="token-details">
+              <summary>Contract details</summary>
+              <p class="caption muted">SQK token · Sepolia (11155111)</p>
+              <a
+                id="token-link"
+                class="mono address-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Waiting for the economy feed…</a
+              >
+              <p class="caption muted">
+                Direct ERC-20 approve(self, 0). No ETH value sent.
+              </p>
+            </details>
+            <div class="local-history">
+              <div class="label-row">
+                <h3>Your check-ins</h3>
+                <span class="caption muted">Saved on this device</span>
+              </div>
+              <ul id="checkin-history" class="checkin-list">
+                <li class="muted caption">
+                  Your first check-in will appear here.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section
+            class="tool-section guess-section"
+            aria-labelledby="guess-title"
+          >
+            <div class="section-title">
+              <h2 id="guess-title">Tonight’s guess</h2>
+              <span class="guess-symbol" aria-hidden="true">?</span>
+            </div>
+            <p class="muted">How far will Squeektoshi run tonight?</p>
+            <form id="guess-form" novalidate>
+              <label for="guess-km">Your distance prediction</label>
+              <div class="guess-controls">
+                <div class="input-wrap">
+                  <input
+                    id="guess-km"
+                    name="distance"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="0.001"
+                    placeholder="e.g. 12.500"
+                    required
+                    aria-describedby="guess-help guess-feedback"
+                  /><span class="muted" aria-hidden="true">km</span>
+                </div>
+                <button class="button outline" type="submit" id="save-guess">
+                  Save guess <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+              <p class="caption muted" id="guess-help">
+                Just for fun. Saved on this device, for this night.
+              </p>
+              <p id="guess-feedback" class="feedback" role="status"></p>
+            </form>
+            <div id="current-guess" class="current-guess" hidden></div>
+            <div class="past-guesses">
+              <h3>Previous guesses</h3>
+              <ul id="guess-results">
+                <li class="caption muted">
+                  Come back after tonight to see how close you were.
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+
+        <section class="overlay-section" aria-labelledby="overlay-title">
+          <div class="overlay-heading">
+            <span class="overlay-mark" aria-hidden="true"
+              ><svg viewBox="0 0 32 32">
+                <path d="M3 5h26v19H3zM12 29h8m-4-5v5M3 10h26" />
+                <circle cx="6.5" cy="7.5" r=".5" />
+                <circle cx="9.5" cy="7.5" r=".5" /></svg
+            ></span>
+            <div>
+              <h2 id="overlay-title">Bring the wheel to your stream.</h2>
+              <p class="muted">
+                A transparent, live overlay for your OBS browser source.
+              </p>
+            </div>
+          </div>
+          <div class="overlay-controls">
+            <label
+              >Size<select id="overlay-size">
+                <option value="small">Small</option>
+                <option value="large">Large</option>
+              </select></label
+            ><label
+              >Theme<select id="overlay-theme">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select></label
+            ><button id="copy-overlay" class="button outline" type="button">
+              Copy OBS overlay link <span aria-hidden="true">↗</span></button
+            ><a
+              id="preview-overlay"
+              class="text-button"
+              href="?overlay=1&size=small&theme=dark"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Preview <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p id="overlay-feedback" class="feedback" role="status"></p>
+          <div id="overlay-copy-fallback" hidden>
+            <label for="overlay-url">Copy this overlay URL</label
+            ><input id="overlay-url" readonly type="url" />
+          </div>
+          <p class="caption muted">
+            In OBS: add a Browser source and paste the link.
+            <span id="obs-dimensions">Use a 380 × 160 canvas.</span>
+          </p>
+        </section>
+        <p id="storage-notice" class="storage-notice" role="status" hidden></p>
+      </main>
+
+      <footer class="site-footer wrap">
+        <div class="footer-brand">
+          <img src="./favicon.svg" width="24" height="24" alt="" /><span
+            >Made for the little guy.</span
+          >
+        </div>
+        <p>Fan-made companion for Squeekchain. Testnet only. Not affiliated.</p>
+        <div>
+          <a
+            href="https://squeekchain.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Squeekchain <span aria-hidden="true">↗</span></a
+          ><a
+            href="https://x.com/squeekchain"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Official livestream <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </footer>
+    </div>
+
+    <main id="overlay" aria-label="Squeek Odometer stream overlay">
+      <div class="overlay-wheel" id="overlay-wheel" aria-hidden="true"></div>
+      <div class="overlay-readings">
+        <p>
+          <span class="status-dot" aria-hidden="true"></span
+          ><span id="overlay-status">CONNECTING</span>
+        </p>
+        <div>
+          <span id="overlay-distance" class="mono">—</span
+          ><span class="muted"> km</span>
+        </div>
+        <p class="muted">
+          <span id="overlay-speed" class="mono">—</span> km/h<span
+            id="overlay-health"
+          ></span>
+        </p>
+      </div>
+    </main>
+
+    <dialog id="wallet-dialog" aria-labelledby="wallet-title">
+      <div class="dialog-heading">
+        <h2 id="wallet-title">Connect a wallet</h2>
+        <button
+          class="icon-button"
+          id="close-wallet"
+          type="button"
+          aria-label="Close wallet picker"
+        >
+          ×
+        </button>
+      </div>
+      <p class="muted" id="wallet-intro">
+        Choose a wallet for Sepolia testnet.
+      </p>
+      <div id="wallet-list"></div>
+      <p class="feedback" id="wallet-feedback" role="status"></p>
+      <p class="caption muted dialog-note">
+        Your wallet stays in your control. Never share a private key or seed
+        phrase.
+      </p>
+    </dialog>
+    <noscript
+      ><p class="noscript-message">
+        Enable JavaScript to see live wheel data and use the check-in and
+        guessing tools.
+      </p></noscript
+    >
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

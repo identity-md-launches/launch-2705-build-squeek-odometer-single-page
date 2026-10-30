@@ -1,0 +1,46 @@
+{
+  "testedAt": "2026-10-30T08:50:54.046Z",
+  "results": [
+    {
+      "name": "Live API mapping, all-time conversions, chart and keyboard data disclosure",
+      "passed": true
+    },
+    {
+      "name": "Guesses validate, persist across reloads, and score the correct completed night",
+      "passed": true
+    },
+    {
+      "name": "Last-good values survive HTTP failures, malformed responses and offline reloads; 15-second refresh",
+      "passed": true
+    },
+    {
+      "name": "EIP-6963 picker, Sepolia switch/add, exact zero approval, receipt and durable history",
+      "passed": true
+    },
+    {
+      "name": "Declined wallet request, wrong network, account changes and on-chain failure states",
+      "passed": true
+    },
+    {
+      "name": "OBS links, clipboard fallback, transparent small/large and light/dark overlays",
+      "passed": true
+    },
+    {
+      "name": "390px phone wallet links, keyboard dialog dismissal and focus return",
+      "passed": true
+    },
+    {
+      "name": "Real RPM, IDLE, manual pause and reduced-motion behavior",
+      "passed": true
+    },
+    {
+      "name": "Responsive production export, first-screen action, resources and axe accessibility",
+      "passed": true
+    },
+    {
+      "name": "WebKit",
+      "skipped": true,
+      "reason": "browserType.launch: \n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Host system is missing dependencies to run browsers. \u2551\n\u2551 Missing libraries:                                   \u2551\n\u2551     libgstreamer-1.0.so.0                            \u2551\n\u2551     libgtk-4.so.1                                    \u2551\n\u2551     libpangocairo-1.0.so.0                           \u2551\n\u2551     libgdk_pixbuf-2.0.so.0                           \u2551"
+    }
+  ]
+}
